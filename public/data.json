@@ -1,0 +1,49 @@
+{
+    "sections": [
+        {
+            "id": "about",
+            "urlSegment": "about",
+            "title": "About",
+            "text": "# Welcome to React Portfolio\n\nReact Portfolio is designed to be a simple, attractive way to present your work.",
+            "type": "text",
+            "colour": "rgba(255, 255, 255, 1)"
+        },
+        {
+            "id": "experiments",
+            "urlSegment": "experiments",
+            "title": "Experiments",
+            "type": "code",
+            "views": [
+                {
+                    "id": "experiment-1",
+                    "urlSegment": "experiment1",
+                    "title": "Experiment Number 1",
+                    "text": "Welcome to Experiment Number 1",
+                    "url": "https://meltplastic.net/demos/react-photos/index.html"
+                },
+                {
+                    "id": "experiment-2",
+                    "urlSegment": "experiment2",
+                    "title": "Experiment Number 2",
+                    "text": "Welcome to Experiment Number 2",
+                    "url": "https://meltplastic.net/projects/three-js-experiment/"
+                },
+                {
+                    "id": "experiment-3",
+                    "urlSegment": "experiment3",
+                    "title": "Experiment Number 3",
+                    "text": "Welcome to Experiment Number 3",
+                    "url": "https://meltplastic.net/projects/angular-travel-app/"
+                }
+            ]
+        },
+        {
+            "id": "contact",
+            "urlSegment": "contact",
+            "title": "Contact",
+            "text": "Contact me.",
+            "type": "contact",
+            "colour": "rgba(0, 0, 0, 0.8)"
+        }
+    ]
+}

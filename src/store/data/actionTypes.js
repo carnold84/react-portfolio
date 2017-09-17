@@ -1,0 +1,1 @@
+export const DATA_FETCHED = 'data.DATA_FETCHED';
