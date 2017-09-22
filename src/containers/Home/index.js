@@ -31,6 +31,7 @@ class Home extends Component {
 
     menuItems = undefined;
     sections = undefined;
+    sectionLookup = {};
 
     onMenuOpen = () => {
         const { isNavOpen } = this.state;
@@ -110,24 +111,18 @@ class Home extends Component {
     };
 
     createSections = (data) => {
-        const sections = data.map((section) => {
+        return data.map((section, i) => {
+            this.sectionLookup[section.urlSegment] = i;
             return this.createSection(section);
         });
-
-        return (
-            <Section
-                direction={Section.DIRECTIONS.VERTICAL}
-                showNav={false}>
-                {sections}
-            </Section>
-        );
     };
     
     createMenuItems = (data) => {
         return data.map((section) => {
             return (
                 <MenuItem 
-                    key={section.id}>
+                    key={section.id}
+                    href={section.urlSegment}>
                     {section.title}
                 </MenuItem>
             );
@@ -144,7 +139,21 @@ class Home extends Component {
     render() {
         const { match, data } = this.props;
 
-        console.log(this.props)
+        console.log(match.params)
+        console.log(this.sectionLookup)
+
+        let sectionIndex = this.sectionLookup[match.params.section];
+
+        if (sectionIndex === undefined) {
+            sectionIndex = 0;
+        }
+        
+        let pageIndex = this.sectionLookup[match.params.page];
+
+        if (pageIndex === undefined) {
+            pageIndex = 0;
+        }
+        console.log(pageIndex)
 
         let nav = undefined;
         let menu = undefined;
@@ -163,7 +172,14 @@ class Home extends Component {
                     {this.menuItems}
                 </Menu>
             );
-            content = this.sections;
+            content = (
+                <Section
+                    index={sectionIndex}
+                    direction={Section.DIRECTIONS.VERTICAL}
+                    showNav={false}>
+                    {this.sections}
+                </Section>
+            );
         }
         
         return (

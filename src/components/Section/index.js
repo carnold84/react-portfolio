@@ -62,6 +62,22 @@ class Section extends Component {
 
         this.setState({slideIndex});
     };
+    
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.index !== this.state.slideIndex) {
+            this.setState({
+                slideIndex: nextProps.index,
+            });
+        }
+    }
+    
+    componentWillMount() {
+        if (this.props.index) {
+            this.setState({
+                slideIndex: this.props.index,
+            });
+        }
+    }
 
     render() {
         const { slideIndex } = this.state;

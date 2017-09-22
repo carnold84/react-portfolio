@@ -1,11 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom'
 
 const Container = styled.li`
     display: flex;
 `;
 
-const Link = styled.a`
+const StyledLink = styled(Link)`
     font-size: 3em;
     line-height: 1.7em;
     text-decoration: none;
@@ -14,13 +15,11 @@ const Link = styled.a`
 
 const MenuItem = (props) => {
     
-    const { onClick, children } = props;
+    const { href, children } = props;
     
     return (
         <Container>
-            <Link onClick={onClick}>
-                {children}
-            </Link>
+            <StyledLink to={href}>{children}</StyledLink>
         </Container>
     );
 }
