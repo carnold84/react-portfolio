@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
+import _isEqual from 'lodash/isEqual';
 
 import { getData } from '../../store/data/reducer';
 
@@ -27,11 +28,14 @@ class Home extends Component {
     
     state = {
         isNavOpen: false,
+        sectionIndex: 0,
+        viewIndex: 0,
     };
 
     menuItems = undefined;
     sections = undefined;
-    sectionLookup = {};
+    routesLookup = {};
+    routes = [];
 
     onMenuOpen = () => {
         const { isNavOpen } = this.state;
@@ -39,6 +43,10 @@ class Home extends Component {
         this.setState({
             isNavOpen: !isNavOpen,
         });
+    };
+
+    onSectionIndexChange = (index, latestIndex) => {
+        console.log(index, latestIndex)
     };
     
     createSection = (data) => {
@@ -112,7 +120,6 @@ class Home extends Component {
 
     createSections = (data) => {
         return data.map((section, i) => {
-            this.sectionLookup[section.urlSegment] = i;
             return this.createSection(section);
         });
     };
@@ -128,32 +135,75 @@ class Home extends Component {
             );
         });
     };
+    
+    createLookups = (data) => {
+        let routes_lookup = {};
+        let routes = [];
+
+        data.forEach((section, i) => {
+            let new_section = {
+                urlSegment: section.urlSegment,
+                index: i,
+            };
+
+            if (section.views) {
+                let new_views = {};
+
+                section.views.forEach((view, i) => {
+                    new_views[view.urlSegment] = i;
+                });
+
+                new_section.views = new_views;
+            }
+            
+            routes_lookup[section.urlSegment] = new_section;
+            routes.push(new_section);
+        });
+
+        return {
+            routesLookup: routes_lookup,
+            routes,
+        };
+    };
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps !== this.props) {
+        const { match, data } = this.props;
+
+        if (!_isEqual(nextProps.data, data)) {
+            const lookups = this.createLookups(nextProps.data.sections);
+            this.routesLookup = lookups.routesLookup;;
+            this.routes = lookups.routes;
             this.menuItems = this.createMenuItems(nextProps.data.sections);
             this.sections = this.createSections(nextProps.data.sections);
         }
+        console.log(this.routesLookup)
+        console.log(match.params)
+        
+        let currentSection = this.routesLookup[match.params.section];
+        let sectionIndex = 0;
+
+        if (currentSection !== undefined) {
+            sectionIndex = currentSection.index;
+        }
+        
+        let viewIndex = this.routesLookup[match.params.view];
+
+        if (viewIndex === undefined) {
+            viewIndex = 0;
+        }
+        console.log(sectionIndex, viewIndex)
+
+        this.setState({
+            sectionIndex,
+            viewIndex,
+        });
     }
     
     render() {
-        const { match, data } = this.props;
+        const { sectionIndex, viewIndex } = this.state;
+        const { data } = this.props;
 
-        console.log(match.params)
-        console.log(this.sectionLookup)
-
-        let sectionIndex = this.sectionLookup[match.params.section];
-
-        if (sectionIndex === undefined) {
-            sectionIndex = 0;
-        }
-        
-        let pageIndex = this.sectionLookup[match.params.page];
-
-        if (pageIndex === undefined) {
-            pageIndex = 0;
-        }
-        console.log(pageIndex)
+        console.log(sectionIndex, viewIndex)
 
         let nav = undefined;
         let menu = undefined;

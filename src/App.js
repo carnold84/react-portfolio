@@ -28,7 +28,7 @@ class App extends Component {
                     <Switch>
                         <Route exact path="/" component={Home}/>
                         <Route exact path="/:section" component={Home}/>
-                        <Route path="/:section/:page" component={Home}/>
+                        <Route path="/:section/:view" component={Home}/>
                     </Switch>
                 </Router>
             </Provider>

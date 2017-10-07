@@ -30,58 +30,28 @@ class Section extends Component {
         HORIZONTAL: 'horizontal',
         VERTICAL: 'vertical',
     };
-
-    state = {
-        slideIndex: 0,
-    };
     
-    onChangeIndex = (index, indexLatest) => {
-        this.setState({
-            slideIndex: index,
-        });
-    };
+    onClick = (isNext) => {
+        const { slideIndex, children, onChangeIndex } = this.props;
 
-    onPrevClick = () => {
-        let slideIndex = this.state.slideIndex;
+        let indexLatest = this.state.slideIndex;
+        let index = indexLatest;
 
-        if (slideIndex > 0) {
-            slideIndex--;
+        if (isNext) {
+            if (indexLatest < children.length - 1) {
+                index = indexLatest + 1;
+            }
+        } else {
+            if (indexLatest > 0) {
+                index = indexLatest - 1;
+            }
         }
 
-        this.setState({slideIndex});
+        onChangeIndex(index, indexLatest);
     };
-    
-    onNextClick = () => {
-        const { children } = this.props;
-
-        let slideIndex = this.state.slideIndex;
-
-        if (slideIndex < children.length - 1) {
-            slideIndex++;
-        }
-
-        this.setState({slideIndex});
-    };
-    
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.index !== this.state.slideIndex) {
-            this.setState({
-                slideIndex: nextProps.index,
-            });
-        }
-    }
-    
-    componentWillMount() {
-        if (this.props.index) {
-            this.setState({
-                slideIndex: this.props.index,
-            });
-        }
-    }
 
     render() {
-        const { slideIndex } = this.state;
-        const { showNav, children, direction, isActive } = this.props;
+        const { slideIndex, showNav, children, direction, isActive, onChangeIndex } = this.props;
             
         const num_sections = children.length;
 
@@ -98,7 +68,7 @@ class Section extends Component {
                     <Nav>
                         <Button
                             disabled={isActive && slideIndex === 0}
-                            onClick={this.onPrevClick}>
+                            onClick={() => this.onClick(false)}>
                             <svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M0 0h24v24H0V0z" fill="none"/>
                                 <path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z"/>
@@ -106,7 +76,7 @@ class Section extends Component {
                         </Button>
                         <Button
                             disabled={isActive && slideIndex === num_sections - 1}
-                            onClick={this.onNextClick}>
+                            onClick={() => this.onClick(true)}>
                             <svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M0 0h24v24H0V0z" fill="none"/>
                                 <path d="M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8 8-8z" fill="#010101"/>
@@ -116,8 +86,8 @@ class Section extends Component {
                 }
     
                 <SwipeableViews
-                    index={this.state.slideIndex}
-                    onChangeIndex={this.onChangeIndex}
+                    index={slideIndex}
+                    onChangeIndex={onChangeIndex}
                     axis={direction === Section.DIRECTIONS.HORIZONTAL ? 'x' : 'y'}
                     enableMouseEvents={true}
                     resistance={true}
@@ -132,15 +102,18 @@ class Section extends Component {
     }
 }
 
-const { oneOf, bool } = propTypes;
+const { oneOf, bool, number, func } = propTypes;
 
 Section.propTypes = {
+    slideIndex: number,
     direction: oneOf([Section.DIRECTIONS.HORIZONTAL, Section.DIRECTIONS.VERTICAL]),
     showNav: bool,
     isActive: bool,
+    onChangeIndex: func,
 };
 
 Section.defaultProps = {
+    slideIndex: 0,
     direction: Section.DIRECTIONS.HORIZONTAL,
     showNav: true,
     isActive: true,
